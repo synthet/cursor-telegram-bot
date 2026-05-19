@@ -1,0 +1,37 @@
+---
+description: Hook normalization, loopback queue, blocking approvals, correlation IDs
+globs: packages/hooks/**,packages/bridge/**
+alwaysApply: false
+---
+
+# Hooks and loopback
+
+## Hooks (`packages/hooks`)
+
+## Do
+
+- Keep hook scripts small: read JSON stdin → normalize → POST to bridge → exit with documented codes.
+- Map hook names to `HookEvent` phases (`before_shell`, `after_file_edit`, etc.).
+- Support policy modes: `observe`, `notify`, `approval`, `block`.
+- Fail closed for high-risk `before_shell` when bridge unavailable (per policy).
+
+## Do not
+
+- Trust hook payload fields without validation.
+- Embed secrets in hook scripts or logs.
+
+## Loopback (`packages/bridge`)
+
+## Do
+
+- Per-session queues; kinds: `user_message`, `approval_decision`, `cancel`, `continue`, etc.
+- Use unguessable `correlationId` for MCP `ask_user` and approvals.
+- Enforce expiry, idempotency, authorization, and audit on every event.
+- Deliver to correct adapter: CLI stdin, MCP waiter, hook blocker, extension stream.
+
+## Do not
+
+- Deliver expired or replayed events.
+- Allow loopback to skip approval policy.
+
+Note: `.cursor/hooks/` is **policy documentation** for agents; runtime hooks live in `packages/hooks/`.

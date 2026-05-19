@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "agent-remote-control": {
+      "command": "node",
+      "args": ["${workspaceFolder}/packages/mcp-server/dist/index.js"],
+      "env": {
+        "AGENT_REMOTE_BRIDGE_URL": "http://127.0.0.1:0",
+        "AGENT_REMOTE_BRIDGE_TOKEN": ""
+      },
+      "disabled": true
+    }
+  }
+}

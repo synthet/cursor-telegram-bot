@@ -1,7 +1,27 @@
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# Build outputs
 dist/
+out/
+*.tsbuildinfo
+*.vsix
+
+# Test / coverage
+coverage/
+
+# Environment and secrets
 .env
 .env.*
 !.env.example
+.cursor/mcp.json
+
+# Logs and OS
 *.log
 .DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor (local machine)
+.idea/

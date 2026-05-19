@@ -1,0 +1,28 @@
+---
+description: Telegram Bot API polling, callbacks, formatting, rate limits
+globs: packages/telegram-bot/**
+alwaysApply: false
+---
+
+# Telegram Bot API
+
+## Do
+
+- Default to **long polling** (`getUpdates`, `timeout > 0`, track `offset`, `allowed_updates`).
+- Call `deleteWebhook` before polling if webhook was active; handle **409** clearly.
+- Always call **`answerCallbackQuery`** for every `callback_query`.
+- Use compact signed callback format `v1:<kind>:<action>:<id>:<nonce>`; validate server-side.
+- Escape user content for HTML parse mode; chunk messages >4096 chars.
+- Rate limit per chat, pairing, approvals; respect **429** `retry_after`.
+- Private chats only by default; reject unauthorized chats.
+
+## Do not
+
+- Put secrets, full prompts, or paths in `callback_data`.
+- Log bot tokens or full pairing codes.
+- Process duplicate updates (broken offset handling).
+- Send unredacted logs/diffs to Telegram.
+
+## Commands
+
+Support `/start`, `/help`, `/pair`, `/status`, `/sessions`, `/new`, `/ask`, `/approve`, `/deny`, `/logs`, `/diff`, `/stop`, `/workspace`, `/mcp`, `/hooks`, `/events`, `/loopback`, `/settings`.

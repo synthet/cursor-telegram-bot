@@ -1,0 +1,25 @@
+{
+  "name": "@agent-remote/bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "agent-remote-bridge": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/cli.ts src/index.ts --format esm --dts --external @cursor/sdk",
+    "dev": "tsup src/cli.ts src/index.ts --format esm --dts --watch",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@agent-remote/shared": "workspace:*",
+    "@agent-remote/telegram-bot": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

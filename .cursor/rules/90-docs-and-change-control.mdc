@@ -1,0 +1,24 @@
+---
+description: Keep docs and AI workspace assets in sync with architecture changes
+alwaysApply: true
+---
+
+# Docs and change control
+
+## Do
+
+- Update `docs/architecture.md` and `docs/security.md` when boundaries or threat model change.
+- Update `docs/ai-workflow/` indexes when adding rules, commands, or skills.
+- Keep `.cursor/skills/` and `.claude/skills/` content identical per skill name.
+- Document security tradeoffs and known limitations in `docs/security.md`.
+- Reference official docs (VS Code API, Cursor hooks/MCP, Telegram Bot API, MCP spec) in guides.
+
+## Do not
+
+- Claim features work in README before implementation exists.
+- Commit real tokens in docs, examples, or `mcp.json`.
+- Leave broken links from README to missing docs.
+
+## PR expectations
+
+Describe security impact, Telegram/MCP surface changes, and whether hook policy defaults changed.

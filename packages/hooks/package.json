@@ -1,0 +1,27 @@
+{
+  "name": "@agent-remote/hooks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "agent-remote-hook": "./dist/bin/hook.js",
+    "agent-remote-before-shell": "./dist/bin/before-shell.js",
+    "agent-remote-after-shell": "./dist/bin/after-shell.js",
+    "agent-remote-before-file-edit": "./dist/bin/before-file-edit.js",
+    "agent-remote-after-file-edit": "./dist/bin/after-file-edit.js",
+    "agent-remote-before-tool": "./dist/bin/before-tool.js",
+    "agent-remote-after-tool": "./dist/bin/after-tool.js"
+  },
+  "scripts": {
+    "build": "tsup src/bin/*.ts src/index.ts --format esm",
+    "dev": "tsup src/bin/*.ts src/index.ts --format esm --watch"
+  },
+  "dependencies": {
+    "@agent-remote/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

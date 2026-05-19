@@ -1,0 +1,7 @@
+{
+  "_comment": "Example completion/session-end style hook payload (fake)",
+  "hook": "sessionEnd",
+  "sessionId": "sess_example_001",
+  "status": "completed",
+  "summary": "Updated shared schemas and bridge health endpoint"
+}

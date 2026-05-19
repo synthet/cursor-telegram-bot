@@ -1,0 +1,23 @@
+{
+  "defaultMode": "notify",
+  "rules": [
+    { "event": "agent_start", "mode": "notify" },
+    { "event": "agent_stop", "mode": "notify" },
+    { "event": "completion", "mode": "notify" },
+    { "event": "error", "mode": "notify" },
+    { "event": "after_shell", "mode": "observe" },
+    { "event": "after_file_edit", "mode": "observe" },
+    { "event": "after_mcp_tool", "mode": "observe" },
+    { "event": "before_shell", "risk": "medium", "mode": "approval" },
+    { "event": "before_shell", "risk": "high", "mode": "block" },
+    { "event": "before_shell", "risk": "critical", "mode": "block" },
+    { "event": "before_file_edit", "risk": "high", "mode": "approval" },
+    { "event": "before_mcp_tool", "toolPattern": "remote.request_approval", "mode": "observe" },
+    { "event": "before_mcp_tool", "risk": "high", "mode": "approval" }
+  ],
+  "bridgeUnavailable": {
+    "before_shell": "block",
+    "before_file_edit": "block",
+    "default": "observe"
+  }
+}

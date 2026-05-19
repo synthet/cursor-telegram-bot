@@ -1,0 +1,25 @@
+---
+description: Vitest, mocks, coverage expectations for packages
+globs: "**/*.test.ts,vitest.config.ts"
+alwaysApply: false
+---
+
+# Testing and quality
+
+## Do
+
+- Use **Vitest**; colocate `*.test.ts` near source or under `__tests__`.
+- Mock Telegram HTTP client, bridge fetch/RPC, and `child_process` spawns.
+- Test: command parser, callback parser, redaction, Zod schemas, hook normalization, loopback enqueue/deliver/expire, MCP tool handlers.
+- Run `pnpm test` and `pnpm lint` before claiming done.
+- Extension: smoke test command registration and SecretStorage wrapper with mocks.
+
+## Do not
+
+- Hit real Telegram API or live bridge in unit tests.
+- Commit snapshots containing tokens or real chat IDs.
+- Skip tests for security parsers and approval idempotency.
+
+## Targets
+
+Shared parsers/schemas, telegram-bot commands/callbacks, bridge health/auth/pairing, mcp-server tools, hooks stdin adapter.

@@ -1,0 +1,26 @@
+---
+description: VS Code/Cursor extension patterns, SecretStorage, bridge lifecycle
+globs: packages/vscode-extension/**,packages/cursor-extension/**
+alwaysApply: false
+---
+
+# VS Code / Cursor extension
+
+## Do
+
+- Register commands: start/stop bridge, pairing code, configure token, dashboard, hooks install.
+- Use `context.secrets` for Telegram token; `globalStorageUri` for non-secret bridge state.
+- Spawn bridge via `child_process` with argv array (no shell interpolation).
+- Show status bar: bridge, pairing, MCP, hooks, sessions, pending approvals.
+- Keep Cursor-specific diagnostics in `cursor-extension`; share logic via `vscode-extension`.
+
+## Do not
+
+- Implement session registry or approval logic in the extension (delegate to bridge RPC).
+- Store tokens in `settings.json` or `globalState`.
+- Use undocumented Cursor private APIs.
+- Duplicate large UI logic between extension packages.
+
+## UI
+
+Tree view: sessions, approvals, MCP, hooks, loopback, events, security. Webview dashboard for operational status.

@@ -1,0 +1,26 @@
+---
+description: Package boundaries and orchestration ownership
+alwaysApply: true
+---
+
+# Architecture boundaries
+
+## Do
+
+- Keep **session registry**, **approval queue**, **audit log**, **event bus**, and **loopback dispatcher** in `packages/bridge`.
+- Route Telegram commands through bridge APIs; authorize chats server-side.
+- Implement MCP tools as thin wrappers that call bridge RPC with auth.
+- Normalize hook payloads in shared/bridge; hooks only send JSON to bridge.
+- Use `AgentAdapter` for Cursor CLI / SDK / noop; inject adapters in bridge.
+- Isolate Cursor-only code in `packages/cursor-extension`.
+
+## Do not
+
+- Let `telegram-bot` write files, run shell, or start agents directly.
+- Duplicate session state in the extension beyond bridge RPC/cache for UI.
+- Expose raw shell or filesystem MCP tools without approval policy.
+- Route loopback outside the dispatcher (no ad hoc side channels).
+
+## Loopback
+
+Only the loopback dispatcher may deliver events to session adapters, MCP waiters, or hook blockers. Every event: `sessionId`, `source`, `kind`, schema-validated `payload`.

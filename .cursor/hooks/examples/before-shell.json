@@ -1,0 +1,9 @@
+{
+  "_comment": "Example Cursor hook stdin payload (fake data for tests/docs only)",
+  "hook": "beforeShellExecution",
+  "sessionId": "sess_example_001",
+  "workspace": "file:///fake/workspace",
+  "command": "npm test",
+  "cwd": "/fake/workspace",
+  "risk": "medium"
+}

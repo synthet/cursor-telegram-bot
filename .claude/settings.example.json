@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(./**)",
+      "Edit(packages/**)",
+      "Edit(docs/**)",
+      "Edit(.cursor/**)",
+      "Bash(pnpm install)",
+      "Bash(pnpm build)",
+      "Bash(pnpm test)",
+      "Bash(pnpm lint)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Edit(.env)"
+    ]
+  }
+}

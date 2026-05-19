@@ -1,0 +1,26 @@
+---
+description: MCP server agent-remote-control tools, resources, prompts, bridge auth
+globs: packages/mcp-server/**
+alwaysApply: false
+---
+
+# MCP server
+
+## Do
+
+- Name server **`agent-remote-control`**; stdio transport for local Cursor/CLI.
+- Implement tools: `remote.status`, `remote.notify`, `remote.request_approval`, `remote.ask_user`, `remote.checkpoint`, `remote.report_diff`, `remote.loopback_enqueue` with Zod I/O.
+- Pass bridge URL/token via **environment variables**, not CLI args.
+- Connect only to authenticated local bridge; return diagnostics if bridge down.
+- Expose read-only resources (`agent-remote://sessions`, approvals, events) without secrets.
+- Rate limit tool calls; audit approval and ask-user flows.
+
+## Do not
+
+- Expose arbitrary shell, file write, or network tools without approval policy.
+- Embed secrets in resources or tool responses.
+- Allow MCP callers to bypass Telegram pairing or approval queue.
+
+## Prompts
+
+Optional: `remote-safe-plan`, `remote-approval-required`, `remote-session-summary`, `remote-diff-summary`.

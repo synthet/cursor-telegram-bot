@@ -1,0 +1,32 @@
+---
+description: Agent Remote Control purpose, architecture, and public-API-only constraint
+alwaysApply: true
+---
+
+# Project overview
+
+## Purpose
+
+Local-first remote control for Cursor/VS Code agentic sessions via Telegram, MCP (`agent-remote-control`), and Cursor hooks. The **bridge** is the control plane.
+
+## Architecture
+
+- `packages/bridge` — orchestrator
+- `packages/telegram-bot` — Telegram Bot API adapter
+- `packages/mcp-server` — MCP tools for agents
+- `packages/hooks` — runtime hook scripts
+- `packages/vscode-extension` + `packages/cursor-extension` — IDE integration
+- `packages/shared` — Zod schemas and shared types
+
+## Do
+
+- Use documented VS Code Extension API, Cursor extension API (where documented), Cursor CLI, MCP, and hooks.
+- Design for polling-first Telegram in local/dev.
+- Fail closed on security errors with actionable messages.
+- Keep implementation status honest in docs when code is still scaffolded.
+
+## Do not
+
+- Rely on private Cursor internals, UI automation, or undocumented local databases.
+- Assume control over pre-existing GUI agent chats unless a documented API supports it.
+- Add cloud relay requirements for v1.

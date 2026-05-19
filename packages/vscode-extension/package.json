@@ -1,0 +1,83 @@
+{
+  "name": "@agent-remote/vscode-extension",
+  "version": "0.1.0",
+  "private": true,
+  "displayName": "Agent Remote Control",
+  "description": "Remote control Cursor/VS Code agentic sessions via Telegram",
+  "publisher": "agent-remote",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "agentRemote.startBridge",
+        "title": "Agent Remote: Start Bridge"
+      },
+      {
+        "command": "agentRemote.stopBridge",
+        "title": "Agent Remote: Stop Bridge"
+      },
+      {
+        "command": "agentRemote.restartBridge",
+        "title": "Agent Remote: Restart Bridge"
+      },
+      {
+        "command": "agentRemote.showDashboard",
+        "title": "Agent Remote: Show Dashboard"
+      },
+      {
+        "command": "agentRemote.generatePairingCode",
+        "title": "Agent Remote: Generate Pairing Code"
+      },
+      {
+        "command": "agentRemote.configureTelegramToken",
+        "title": "Agent Remote: Configure Telegram Token"
+      },
+      {
+        "command": "agentRemote.clearTelegramToken",
+        "title": "Agent Remote: Clear Telegram Token"
+      },
+      {
+        "command": "agentRemote.showSecurityStatus",
+        "title": "Agent Remote: Show Security Status"
+      },
+      {
+        "command": "agentRemote.showMcpStatus",
+        "title": "Agent Remote: Show MCP Status"
+      },
+      {
+        "command": "agentRemote.installCursorHooks",
+        "title": "Agent Remote: Install Cursor Hooks"
+      },
+      {
+        "command": "agentRemote.uninstallCursorHooks",
+        "title": "Agent Remote: Uninstall Cursor Hooks"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "agentRemoteTree",
+          "name": "Agent Remote"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsup src/extension.ts --format cjs --platform node --external vscode",
+    "dev": "tsup src/extension.ts --format cjs --platform node --external vscode --watch"
+  },
+  "dependencies": {
+    "@agent-remote/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/vscode": "^1.85.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

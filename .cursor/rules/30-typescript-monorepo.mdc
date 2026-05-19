@@ -1,0 +1,26 @@
+---
+description: pnpm workspace, TypeScript strict, shared schemas, package boundaries
+globs: packages/**/*.ts,*.config.*,tsconfig*.json
+alwaysApply: false
+---
+
+# TypeScript monorepo
+
+## Do
+
+- Use **pnpm** workspaces; depend via `workspace:*` on `@agent-remote/shared`.
+- Enable TypeScript **strict**; export types from `shared` for all boundaries.
+- Define Zod schemas once in `shared`; infer types with `z.infer`.
+- Build packages with **tsup**; keep `dist/` out of git.
+- Avoid circular dependencies: `shared` → leaf packages → `bridge` aggregates adapters.
+
+## Do not
+
+- Duplicate protocol types across packages.
+- Use `any` for hook/MCP/Telegram payloads.
+- Import `bridge` from `telegram-bot` or vice versa in a cycle.
+- Commit `node_modules/` or secrets in `.env`.
+
+## Scripts
+
+Root: `pnpm build`, `pnpm test`, `pnpm lint`, `pnpm format:check`.
