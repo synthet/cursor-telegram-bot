@@ -17,6 +17,25 @@ export interface BridgeConfig {
   telegramToken?: string;
 }
 
+export type TelegramSender = (
+  chatId: number,
+  text: string,
+  extra?: Record<string, unknown>,
+) => Promise<unknown>;
+
+interface AskWaiter {
+  correlationId: string;
+  chatId: number;
+  question: string;
+  choices?: string[];
+  resolve: (result: {
+    answer?: string;
+    choice?: string;
+    status: "answered" | "expired" | "cancelled";
+  }) => void;
+  timer: ReturnType<typeof setTimeout>;
+}
+
 export class BridgeContext {
   readonly startedAt = Date.now();
   readonly authToken: string;
@@ -34,17 +53,16 @@ export class BridgeContext {
   mcpRunning = false;
   telegramToken?: string;
   lastError?: string;
+  telegramSender?: TelegramSender;
 
   private hookEvents: Array<{ id: string; summary: string; timestamp: string }> = [];
-  private askUserWaiters = new Map<
-    string,
-    { chatId: number; correlationId: string; resolve: (v: string) => void }
-  >();
+  private askWaiters = new Map<string, AskWaiter>();
+  private askQueueByChat = new Map<number, string[]>();
 
   constructor(readonly config: BridgeConfig) {
     this.authToken = randomBytes(32).toString("hex");
     this.telegramToken = config.telegramToken;
-    this.loopback = new LoopbackDispatcher(this.audit, this.adapters);
+    this.loopback = new LoopbackDispatcher(this.audit, this.adapters, this.events);
   }
 
   async initialize(): Promise<void> {
@@ -61,24 +79,69 @@ export class BridgeContext {
     return this.hookEvents.slice(-10);
   }
 
-  registerAskUserWaiter(
-    correlationId: string,
-    chatId: number,
-    resolve: (answer: string) => void,
-  ): void {
-    this.askUserWaiters.set(correlationId, { chatId, correlationId, resolve });
+  registerAskWaiter(input: {
+    correlationId: string;
+    chatId: number;
+    question: string;
+    choices?: string[];
+    timeoutMs: number;
+  }): Promise<{ answer?: string; choice?: string; status: "answered" | "expired" | "cancelled" }> {
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => {
+        if (this.askWaiters.has(input.correlationId)) {
+          this.askWaiters.delete(input.correlationId);
+          this.removeAskFromQueue(input.chatId, input.correlationId);
+          resolve({ status: "expired" });
+        }
+      }, input.timeoutMs);
+
+      this.askWaiters.set(input.correlationId, {
+        correlationId: input.correlationId,
+        chatId: input.chatId,
+        question: input.question,
+        choices: input.choices,
+        resolve: (result) => {
+          clearTimeout(timer);
+          this.askWaiters.delete(input.correlationId);
+          this.removeAskFromQueue(input.chatId, input.correlationId);
+          resolve(result);
+        },
+        timer,
+      });
+
+      const queue = this.askQueueByChat.get(input.chatId) ?? [];
+      queue.push(input.correlationId);
+      this.askQueueByChat.set(input.chatId, queue);
+    });
   }
 
-  resolveAskUser(correlationId: string, answer: string): boolean {
-    const waiter = this.askUserWaiters.get(correlationId);
+  /** Resolve the oldest pending ask for `chatId` with a free-text answer. */
+  resolveOldestAsk(chatId: number, answer: string): boolean {
+    const queue = this.askQueueByChat.get(chatId);
+    if (!queue || queue.length === 0) return false;
+    const correlationId = queue[0]!;
+    return this.resolveAsk(correlationId, { answer, status: "answered" });
+  }
+
+  resolveAsk(
+    correlationId: string,
+    result: { answer?: string; choice?: string; status: "answered" | "expired" | "cancelled" },
+  ): boolean {
+    const waiter = this.askWaiters.get(correlationId);
     if (!waiter) return false;
-    waiter.resolve(answer);
-    this.askUserWaiters.delete(correlationId);
-    this.loopback.resolveMcpWaiter(correlationId, { answer });
+    waiter.resolve(result);
     return true;
   }
 
+  private removeAskFromQueue(chatId: number, correlationId: string): void {
+    const queue = this.askQueueByChat.get(chatId);
+    if (!queue) return;
+    const idx = queue.indexOf(correlationId);
+    if (idx >= 0) queue.splice(idx, 1);
+    if (queue.length === 0) this.askQueueByChat.delete(chatId);
+  }
+
   getAskUserWaiterCount(): number {
-    return this.askUserWaiters.size;
+    return this.askWaiters.size;
   }
 }

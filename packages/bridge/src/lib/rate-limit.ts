@@ -27,10 +27,6 @@ export class RateLimiter {
   }
 
   checkPairing(chatId: number): boolean {
-    return this.check(
-      `pair:${chatId}`,
-      this.limits.pairingAttemptsPerFiveMinutes,
-      5 * 60_000,
-    );
+    return this.check(`pair:${chatId}`, this.limits.pairingAttemptsPerFiveMinutes, 5 * 60_000);
   }
 }

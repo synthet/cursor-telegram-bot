@@ -21,10 +21,7 @@ export class AuditLog {
       summary: redact(summary),
       metadata: metadata
         ? Object.fromEntries(
-            Object.entries(metadata).map(([k, v]) => [
-              k,
-              typeof v === "string" ? redact(v) : v,
-            ]),
+            Object.entries(metadata).map(([k, v]) => [k, typeof v === "string" ? redact(v) : v]),
           )
         : undefined,
     };

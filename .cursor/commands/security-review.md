@@ -34,12 +34,20 @@ Review the current diff or specified paths for token leaks, remote-control risks
 
 ```md
 ## Security review
+
 ### Critical
+
 - ...
+
 ### High
+
 - ...
+
 ### Passed checks
+
 - ...
+
 ### Recommended tests
+
 - ...
 ```

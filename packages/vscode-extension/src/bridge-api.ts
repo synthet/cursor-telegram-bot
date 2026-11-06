@@ -1,7 +1,5 @@
 export class ExtensionBridgeApi {
-  constructor(
-    private getState: () => { url?: string; authToken?: string },
-  ) {}
+  constructor(private getState: () => { url?: string; authToken?: string }) {}
 
   private async request<T>(path: string, init?: RequestInit): Promise<T> {
     const { url, authToken } = this.getState();

@@ -10,12 +10,14 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup src/cli.ts src/index.ts --format esm --dts --external @cursor/sdk",
+    "bundle:extension": "tsup --config tsup.extension.json",
     "dev": "tsup src/cli.ts src/index.ts --format esm --dts --watch",
     "start": "node dist/cli.js"
   },
   "dependencies": {
     "@agent-remote/shared": "workspace:*",
-    "@agent-remote/telegram-bot": "workspace:*"
+    "@agent-remote/telegram-bot": "workspace:*",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -25,9 +25,7 @@ describe("TelegramPoller offset", () => {
     poller.stop();
     await new Promise((r) => setTimeout(r, 600));
 
-    expect(client.getUpdates).toHaveBeenCalledWith(
-      expect.objectContaining({ offset: 0 }),
-    );
+    expect(client.getUpdates).toHaveBeenCalledWith(expect.objectContaining({ offset: 0 }));
     expect(router.handleUpdate).toHaveBeenCalled();
   });
 });

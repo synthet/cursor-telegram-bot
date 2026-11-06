@@ -2,13 +2,13 @@
 
 ## Tools
 
-- `remote.status`
-- `remote.notify`
-- `remote.request_approval`
-- `remote.ask_user`
-- `remote.checkpoint`
-- `remote.report_diff`
-- `remote.loopback_enqueue`
+- `remote_status`
+- `remote_notify`
+- `remote_request_approval`
+- `remote_ask_user`
+- `remote_checkpoint`
+- `remote_report_diff`
+- `remote_loopback_enqueue`
 
 ## Resources
 

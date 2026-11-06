@@ -5,6 +5,19 @@ import { DiffFileSchema } from "./log.js";
 
 export const MCP_SERVER_NAME = "agent-remote-control";
 
+/** Cursor-compatible MCP tool names (alphanumeric + underscore only). */
+export const MCP_TOOL_NAMES = {
+  status: "remote_status",
+  notify: "remote_notify",
+  requestApproval: "remote_request_approval",
+  askUser: "remote_ask_user",
+  checkpoint: "remote_checkpoint",
+  reportDiff: "remote_report_diff",
+  loopbackEnqueue: "remote_loopback_enqueue",
+} as const;
+
+export const MCP_TOOL_NAME_LIST = Object.values(MCP_TOOL_NAMES);
+
 export const RemoteStatusOutputSchema = z.object({
   bridgeRunning: z.boolean(),
   telegramPaired: z.boolean(),

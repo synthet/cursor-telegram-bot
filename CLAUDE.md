@@ -20,15 +20,15 @@ pnpm install && pnpm build && pnpm test && pnpm lint
 
 ## Slash commands (`.claude/commands/`)
 
-| Command | Use when |
-|---------|----------|
-| `plan` | Break down work before coding |
-| `implement` | Build a scoped feature |
-| `review-security` | Token leaks, bridge exposure, approval bypass |
-| `review-mcp` | MCP tool boundaries and schemas |
-| `review-hooks` | Hook policy and blocking behavior |
-| `test-telegram` | Telegram flows with mocks |
-| `summarize-session` | Handoff notes at end of session |
+| Command             | Use when                                      |
+| ------------------- | --------------------------------------------- |
+| `plan`              | Break down work before coding                 |
+| `implement`         | Build a scoped feature                        |
+| `review-security`   | Token leaks, bridge exposure, approval bypass |
+| `review-mcp`        | MCP tool boundaries and schemas               |
+| `review-hooks`      | Hook policy and blocking behavior             |
+| `test-telegram`     | Telegram flows with mocks                     |
+| `summarize-session` | Handoff notes at end of session               |
 
 Cursor equivalents live in `.cursor/commands/`.
 
@@ -59,3 +59,5 @@ Mock external I/O. Prefer unit tests for parsers, policies, and schemas before i
 ## Session end
 
 Run **summarize-session**: what changed, tests run, security notes, follow-ups, whether MCP/hooks docs need updates.
+
+@AGENTS.md

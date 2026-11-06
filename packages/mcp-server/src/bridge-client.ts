@@ -50,7 +50,12 @@ export class McpBridgeClient {
   }
 
   askUser(body: Record<string, unknown>) {
-    return this.request<{ correlationId: string }>("/internal/mcp/ask-user", {
+    return this.request<{
+      correlationId: string;
+      answer?: string;
+      choice?: string;
+      status: "answered" | "expired" | "cancelled";
+    }>("/internal/mcp/ask-user", {
       method: "POST",
       body: JSON.stringify(body),
     });
@@ -58,10 +63,10 @@ export class McpBridgeClient {
 
   enqueueLoopback(body: Record<string, unknown>) {
     const sessionId = body.sessionId as string;
-    return this.request<{ eventId: string; accepted: boolean }>(
-      `/loopback/${sessionId}/enqueue`,
-      { method: "POST", body: JSON.stringify(body) },
-    );
+    return this.request<{ eventId: string; accepted: boolean }>(`/loopback/${sessionId}/enqueue`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
   }
 
   listSessions() {

@@ -4,17 +4,17 @@ This directory indexes project-specific instructions for Cursor, Claude Code, an
 
 ## What was generated
 
-| Asset | Location |
-|-------|----------|
-| Agent contract | [AGENTS.md](../../AGENTS.md) |
-| Claude memory | [CLAUDE.md](../../CLAUDE.md) |
-| Cursor rules | [.cursor/rules/](../../.cursor/rules/) |
-| Cursor commands | [.cursor/commands/](../../.cursor/commands/) |
-| Cursor skills | [.cursor/skills/](../../.cursor/skills/) |
-| Claude commands | [.claude/commands/](../../.claude/commands/) |
-| Claude skills | [.claude/skills/](../../.claude/skills/) — mirror of Cursor skills |
-| MCP template | [.cursor/mcp.example.json](../../.cursor/mcp.example.json) |
-| Hook policy (docs) | [.cursor/hooks/](../../.cursor/hooks/) |
+| Asset              | Location                                                           |
+| ------------------ | ------------------------------------------------------------------ |
+| Agent contract     | [AGENTS.md](../../AGENTS.md)                                       |
+| Claude memory      | [CLAUDE.md](../../CLAUDE.md)                                       |
+| Cursor rules       | [.cursor/rules/](../../.cursor/rules/)                             |
+| Cursor commands    | [.cursor/commands/](../../.cursor/commands/)                       |
+| Cursor skills      | [.cursor/skills/](../../.cursor/skills/)                           |
+| Claude commands    | [.claude/commands/](../../.claude/commands/)                       |
+| Claude skills      | [.claude/skills/](../../.claude/skills/) — mirror of Cursor skills |
+| MCP template       | [.cursor/mcp.example.json](../../.cursor/mcp.example.json)         |
+| Hook policy (docs) | [.cursor/hooks/](../../.cursor/hooks/)                             |
 
 ## Quick start for agents
 
@@ -25,6 +25,7 @@ This directory indexes project-specific instructions for Cursor, Claude Code, an
 
 ## Indexes
 
+- [Integration tooling research](../research/integration-tooling-research.md) — external agents, verification, phased roadmap
 - [rule-index.md](rule-index.md)
 - [command-index.md](command-index.md)
 - [skill-index.md](skill-index.md)

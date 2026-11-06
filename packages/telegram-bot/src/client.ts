@@ -30,7 +30,11 @@ export class TelegramClient {
     });
     const data = (await res.json()) as TelegramApiResponse<T>;
     if (!data.ok) {
-      const err = new TelegramError(data.description ?? "Telegram API error", "TELEGRAM_API", data.error_code);
+      const err = new TelegramError(
+        data.description ?? "Telegram API error",
+        "TELEGRAM_API",
+        data.error_code,
+      );
       if (data.error_code === 429 && data.parameters?.retry_after) {
         (err as TelegramError & { retryAfter: number }).retryAfter = data.parameters.retry_after;
       }
@@ -60,7 +64,12 @@ export class TelegramClient {
     });
   }
 
-  editMessageText(chatId: number, messageId: number, text: string, extra?: Record<string, unknown>) {
+  editMessageText(
+    chatId: number,
+    messageId: number,
+    text: string,
+    extra?: Record<string, unknown>,
+  ) {
     return this.call("editMessageText", {
       chat_id: chatId,
       message_id: messageId,

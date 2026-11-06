@@ -2,7 +2,7 @@
   "_comment": "Example hook payload before MCP tool call (fake)",
   "hook": "beforeMcpTool",
   "sessionId": "sess_example_001",
-  "tool": "remote.notify",
+  "tool": "remote_notify",
   "arguments": {
     "level": "info",
     "title": "Progress",

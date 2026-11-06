@@ -8,7 +8,7 @@ description: Design and implement the agent-remote-control MCP server tools, res
 ## Use this skill when
 
 - Working in `packages/mcp-server`
-- Adding `remote.*` tools, resources, or prompts
+- Adding `remote_*` tools, resources, or prompts
 - Configuring `.cursor/mcp.example.json`
 
 ## Procedure
@@ -17,11 +17,11 @@ description: Design and implement the agent-remote-control MCP server tools, res
 2. Use `@modelcontextprotocol/sdk`; server name **`agent-remote-control`**.
 3. **Transport:** stdio default; env `AGENT_REMOTE_BRIDGE_URL`, `AGENT_REMOTE_BRIDGE_TOKEN` (never CLI args for secrets).
 4. **Tools (Zod I/O):**
-   - `remote.status` — bridge/session snapshot
-   - `remote.notify` — paired chat notification (redacted, rate limited)
-   - `remote.request_approval` — Telegram inline approve/deny + wait
-   - `remote.ask_user` — question + optional choices; correlate reply
-   - `remote.checkpoint`, `remote.report_diff`, `remote.loopback_enqueue`
+   - `remote_status` — bridge/session snapshot
+   - `remote_notify` — paired chat notification (redacted, rate limited)
+   - `remote_request_approval` — Telegram inline approve/deny + wait
+   - `remote_ask_user` — question + optional choices; correlate reply
+   - `remote_checkpoint`, `remote_report_diff`, `remote_loopback_enqueue`
 5. **Resources:** `agent-remote://sessions`, approvals, recent events, config status — no secrets.
 6. **Prompts:** `remote-safe-plan`, `remote-approval-required`, `remote-session-summary`, `remote-diff-summary`.
 7. On bridge down: return structured diagnostics, do not throw opaque errors.

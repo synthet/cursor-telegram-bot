@@ -1,5 +1,6 @@
 import { BridgeContext, type BridgeConfig } from "./bridge-context.js";
 import { createBridgeServer } from "./server.js";
+import { DEFAULT_RATE_LIMITS } from "@agent-remote/shared";
 import {
   BridgeClient,
   TelegramClient,
@@ -38,6 +39,10 @@ export async function startBridge(options: StartBridgeOptions): Promise<{
   if (ctx.telegramToken) {
     const tgClient = new TelegramClient({ token: ctx.telegramToken });
     const bridgeClient = new BridgeClient({ baseUrl: url, authToken: ctx.authToken });
+
+    // Expose a Telegram sender so the bridge can post approval / ask prompts directly.
+    ctx.telegramSender = (chatId, text, extra) => tgClient.sendMessage(chatId, text, extra);
+
     const router = new UpdateRouter({
       client: tgClient,
       bridge: bridgeClient,
@@ -46,6 +51,18 @@ export async function startBridge(options: StartBridgeOptions): Promise<{
         uri: options.workspaceUri,
         name: options.workspaceName,
       }),
+      onPlainText: async (chatId, text) => {
+        if (
+          !ctx.rateLimiter.check(
+            `ask-reply:${chatId}`,
+            DEFAULT_RATE_LIMITS.chatCommandsPerMinute,
+            60_000,
+          )
+        ) {
+          return;
+        }
+        ctx.resolveOldestAsk(chatId, text);
+      },
     });
     poller = new TelegramPoller({ client: tgClient, router });
     void poller.start();

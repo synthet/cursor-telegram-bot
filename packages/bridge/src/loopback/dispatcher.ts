@@ -2,6 +2,7 @@ import type { LoopbackEvent, LoopbackKind, LoopbackSource } from "@agent-remote/
 import { generateId } from "../lib/ids.js";
 import type { AuditLog } from "../audit-log.js";
 import type { AgentAdapterRegistry } from "../adapters/registry.js";
+import type { EventBus } from "../event-bus.js";
 
 export interface EnqueueLoopbackInput {
   sessionId: string;
@@ -26,6 +27,7 @@ export class LoopbackDispatcher {
   constructor(
     private readonly audit: AuditLog,
     private readonly adapters: AgentAdapterRegistry,
+    private readonly events?: EventBus,
   ) {}
 
   enqueue(input: EnqueueLoopbackInput): LoopbackEvent {
@@ -46,6 +48,7 @@ export class LoopbackDispatcher {
     queue.push(event);
     this.queues.set(input.sessionId, queue);
     this.audit.append("loopback.enqueue", `${input.kind} for ${input.sessionId}`);
+    this.events?.publish({ type: "loopback", eventId: event.id });
     void this.deliver(event);
     return event;
   }
@@ -75,15 +78,27 @@ export class LoopbackDispatcher {
       } catch {
         event.status = "failed";
       }
-    } else if (event.kind === "user_message" && typeof event.payload === "object") {
-      const msg = (event.payload as { message?: string }).message;
-      if (msg) {
-        await this.adapters.sendMessage(event.sessionId, msg);
-        event.status = "delivered";
+      return;
+    }
+
+    // Adapter has no deliverLoopbackEvent implementation; fall back to coarse routing.
+    try {
+      if (event.kind === "user_message" && typeof event.payload === "object" && event.payload) {
+        const msg = (event.payload as { message?: string }).message;
+        if (msg) {
+          await this.adapters.sendMessage(event.sessionId, msg);
+          event.status = "delivered";
+          return;
+        }
       }
-    } else if (event.kind === "cancel") {
-      await this.adapters.stopSession(event.sessionId);
-      event.status = "delivered";
+      if (event.kind === "cancel") {
+        await this.adapters.stopSession(event.sessionId);
+        event.status = "delivered";
+        return;
+      }
+      event.status = "failed";
+    } catch {
+      event.status = "failed";
     }
   }
 
@@ -99,10 +114,7 @@ export class LoopbackDispatcher {
     return all;
   }
 
-  registerMcpWaiter(
-    correlationId: string,
-    timeoutMs: number,
-  ): Promise<unknown> {
+  registerMcpWaiter(correlationId: string, timeoutMs: number): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         this.mcpWaiters.delete(correlationId);

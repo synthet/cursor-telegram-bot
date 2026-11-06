@@ -13,6 +13,7 @@ import {
   MCP_PROMPT_NAMES,
   MCP_RESOURCE_URIS,
   MCP_SERVER_NAME,
+  MCP_TOOL_NAMES,
   RemoteAskUserInputSchema,
   RemoteCheckpointInputSchema,
   RemoteLoopbackEnqueueInputSchema,
@@ -24,12 +25,14 @@ import { McpBridgeClient } from "./bridge-client.js";
 const bridgeUrl = process.env.AGENT_REMOTE_BRIDGE_URL ?? "http://127.0.0.1:3847";
 const bridgeToken = process.env.AGENT_REMOTE_BRIDGE_TOKEN ?? "";
 
+if (!bridgeToken) {
+  console.error(
+    "agent-remote-mcp: AGENT_REMOTE_BRIDGE_TOKEN not set. Start the bridge from the VS Code extension first.",
+  );
+  process.exit(1);
+}
+
 function getBridge(): McpBridgeClient {
-  if (!bridgeToken) {
-    throw new Error(
-      "AGENT_REMOTE_BRIDGE_TOKEN not set. Start the bridge from the VS Code extension first.",
-    );
-  }
   return new McpBridgeClient(bridgeUrl, bridgeToken);
 }
 
@@ -41,39 +44,61 @@ const server = new Server(
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
-      name: "remote.status",
+      name: MCP_TOOL_NAMES.status,
       description: "Returns bridge and session status",
       inputSchema: { type: "object", properties: {} },
     },
     {
-      name: "remote.notify",
+      name: MCP_TOOL_NAMES.notify,
       description: "Send notification to paired Telegram chat",
-      inputSchema: { type: "object", properties: { level: { type: "string" }, title: { type: "string" }, message: { type: "string" } } },
+      inputSchema: {
+        type: "object",
+        properties: {
+          level: { type: "string" },
+          title: { type: "string" },
+          message: { type: "string" },
+        },
+      },
     },
     {
-      name: "remote.request_approval",
+      name: MCP_TOOL_NAMES.requestApproval,
       description: "Request Telegram user approval for an action",
-      inputSchema: { type: "object", properties: { sessionId: { type: "string" }, summary: { type: "string" } } },
+      inputSchema: {
+        type: "object",
+        properties: { sessionId: { type: "string" }, summary: { type: "string" } },
+      },
     },
     {
-      name: "remote.ask_user",
+      name: MCP_TOOL_NAMES.askUser,
       description: "Ask the Telegram user a question and wait for reply",
-      inputSchema: { type: "object", properties: { sessionId: { type: "string" }, question: { type: "string" } } },
+      inputSchema: {
+        type: "object",
+        properties: { sessionId: { type: "string" }, question: { type: "string" } },
+      },
     },
     {
-      name: "remote.checkpoint",
+      name: MCP_TOOL_NAMES.checkpoint,
       description: "Register a named checkpoint",
-      inputSchema: { type: "object", properties: { sessionId: { type: "string" }, title: { type: "string" } } },
+      inputSchema: {
+        type: "object",
+        properties: { sessionId: { type: "string" }, title: { type: "string" } },
+      },
     },
     {
-      name: "remote.report_diff",
+      name: MCP_TOOL_NAMES.reportDiff,
       description: "Report diff summary to Telegram",
-      inputSchema: { type: "object", properties: { sessionId: { type: "string" }, files: { type: "array" } } },
+      inputSchema: {
+        type: "object",
+        properties: { sessionId: { type: "string" }, files: { type: "array" } },
+      },
     },
     {
-      name: "remote.loopback_enqueue",
+      name: MCP_TOOL_NAMES.loopbackEnqueue,
       description: "Queue a loopback event for a session",
-      inputSchema: { type: "object", properties: { sessionId: { type: "string" }, kind: { type: "string" } } },
+      inputSchema: {
+        type: "object",
+        properties: { sessionId: { type: "string" }, kind: { type: "string" } },
+      },
     },
   ],
 }));
@@ -136,7 +161,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   const args = req.params.arguments ?? {};
 
   try {
-    if (name === "remote.status") {
+    if (name === MCP_TOOL_NAMES.status) {
       const s = await bridge.getStatus();
       return {
         content: [
@@ -152,13 +177,13 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       };
     }
 
-    if (name === "remote.notify") {
+    if (name === MCP_TOOL_NAMES.notify) {
       const input = RemoteNotifyInputSchema.parse(args);
       await bridge.notify(input);
       return { content: [{ type: "text", text: JSON.stringify({ ok: true }) }] };
     }
 
-    if (name === "remote.request_approval") {
+    if (name === MCP_TOOL_NAMES.requestApproval) {
       const input = RemoteRequestApprovalInputSchema.parse(args);
       const { approvalId } = await bridge.requestApproval(input);
       const result = await bridge.waitApproval(approvalId, input.timeoutMs ?? 300_000);
@@ -176,24 +201,19 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       };
     }
 
-    if (name === "remote.ask_user") {
+    if (name === MCP_TOOL_NAMES.askUser) {
       const input = RemoteAskUserInputSchema.parse(args);
-      const { correlationId } = await bridge.askUser({
+      // Bridge blocks until the user replies or the timeout fires; no separate wait call needed.
+      const result = await bridge.askUser({
         ...input,
         correlationId: `ask_${Date.now()}`,
       });
-      await new Promise((r) => setTimeout(r, input.timeoutMs ?? 300_000));
       return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({ status: "expired", correlationId }),
-          },
-        ],
+        content: [{ type: "text", text: JSON.stringify(result) }],
       };
     }
 
-    if (name === "remote.checkpoint") {
+    if (name === MCP_TOOL_NAMES.checkpoint) {
       const input = RemoteCheckpointInputSchema.parse(args);
       const checkpointId = `cp_${Date.now()}`;
       await bridge.enqueueLoopback({
@@ -205,7 +225,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       return { content: [{ type: "text", text: JSON.stringify({ checkpointId }) }] };
     }
 
-    if (name === "remote.report_diff") {
+    if (name === MCP_TOOL_NAMES.reportDiff) {
       const input = RemoteReportDiffInputSchema.parse(args);
       await bridge.enqueueLoopback({
         sessionId: input.sessionId,
@@ -216,7 +236,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       return { content: [{ type: "text", text: JSON.stringify({ accepted: true }) }] };
     }
 
-    if (name === "remote.loopback_enqueue") {
+    if (name === MCP_TOOL_NAMES.loopbackEnqueue) {
       const input = RemoteLoopbackEnqueueInputSchema.parse(args);
       const result = await bridge.enqueueLoopback(input);
       return { content: [{ type: "text", text: JSON.stringify(result) }] };

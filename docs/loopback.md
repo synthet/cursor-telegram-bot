@@ -5,7 +5,7 @@ Per-session queues route Telegram, MCP, hook, and extension events back into the
 ## Examples
 
 - `/ask sess_123 run tests` → `user_message` → adapter `sendMessage`
-- MCP `remote.ask_user` → Telegram question → user reply → MCP result
+- MCP `remote_ask_user` → Telegram question → user reply → MCP result
 - Hook shell approval → `approval_decision` → hook unblocks
 - `/stop sess_123` → `cancel` → `stopSession`
 

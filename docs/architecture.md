@@ -30,15 +30,15 @@ Workspace + agents (CLI / MCP / hooks)
 
 ## Packages
 
-| Package | Role |
-|---------|------|
-| `@agent-remote/shared` | Zod schemas, types, parsers, redaction |
-| `@agent-remote/bridge` | Orchestrator; sessions, approvals, loopback |
-| `@agent-remote/telegram-bot` | Bot API; polling default |
-| `@agent-remote/mcp-server` | MCP `agent-remote-control` (stdio) |
-| `@agent-remote/hooks` | Hook scripts → bridge |
-| `@agent-remote/vscode-extension` | UI, secrets, bridge lifecycle |
-| `@agent-remote/cursor-extension` | Cursor-specific thin layer |
+| Package                         | Role                                        |
+| ------------------------------- | ------------------------------------------- |
+| `@agent-remote/shared`          | Zod schemas, types, parsers, redaction      |
+| `@agent-remote/bridge`          | Orchestrator; sessions, approvals, loopback |
+| `@agent-remote/telegram-bot`    | Bot API; polling default                    |
+| `@agent-remote/mcp-server`      | MCP `agent-remote-control` (stdio)          |
+| `@agent-remote/hooks`           | Hook scripts → bridge                       |
+| `agent-remote-vscode-extension` | UI, secrets, bridge lifecycle               |
+| `agent-remote-cursor-extension` | Cursor-specific thin layer                  |
 
 ## Design constraints
 
@@ -52,6 +52,8 @@ Workspace + agents (CLI / MCP / hooks)
 - No cloud relay; Telegram talks to your machine (polling or self-hosted webhook).
 - No guarantee of controlling pre-existing GUI agent chats without documented APIs.
 - Fallback: Cursor CLI / MCP / hooks for sessions started by this system.
+
+Optional agent backends, verification runners, and security gates beyond Cursor CLI/SDK are phased per [research/integration-tooling-research.md](research/integration-tooling-research.md).
 
 ## AI agents
 

@@ -22,15 +22,15 @@ Telegram → telegram-bot → bridge (127.0.0.1, auth token)
 vscode-extension / cursor-extension → spawn bridge, SecretStorage for bot token
 ```
 
-| Package | Responsibility |
-|---------|----------------|
-| `@agent-remote/shared` | Zod schemas, types, parsers, redaction |
-| `@agent-remote/bridge` | Orchestrator; owns sessions, approvals, loopback |
-| `@agent-remote/telegram-bot` | Bot API client; polling default; no direct workspace access |
-| `@agent-remote/mcp-server` | MCP tools `remote.*`; connects to bridge only |
-| `@agent-remote/hooks` | Runtime hook scripts → bridge |
-| `@agent-remote/vscode-extension` | VS Code UI, bridge lifecycle, secrets |
-| `@agent-remote/cursor-extension` | Thin Cursor-specific layer |
+| Package                          | Responsibility                                              |
+| -------------------------------- | ----------------------------------------------------------- |
+| `@agent-remote/shared`           | Zod schemas, types, parsers, redaction                      |
+| `@agent-remote/bridge`           | Orchestrator; owns sessions, approvals, loopback            |
+| `@agent-remote/telegram-bot`     | Bot API client; polling default; no direct workspace access |
+| `@agent-remote/mcp-server`       | MCP tools `remote.*`; connects to bridge only               |
+| `@agent-remote/hooks`            | Runtime hook scripts → bridge                               |
+| `@agent-remote/vscode-extension` | VS Code UI, bridge lifecycle, secrets                       |
+| `@agent-remote/cursor-extension` | Thin Cursor-specific layer                                  |
 
 Deeper docs: [docs/architecture.md](docs/architecture.md), [docs/ai-workflow/](docs/ai-workflow/).
 
@@ -105,13 +105,39 @@ See [docs/security.md](docs/security.md) and `.cursor/rules/20-security-and-secr
 
 ## AI workspace assets
 
-| Asset | Location |
-|-------|----------|
-| Cursor rules | `.cursor/rules/*.mdc` |
-| Cursor commands | `.cursor/commands/*.md` |
-| Cursor skills | `.cursor/skills/*/SKILL.md` |
-| MCP template | `.cursor/mcp.example.json` |
-| Hook policy (docs) | `.cursor/hooks/` |
-| Claude commands | `.claude/commands/*.md` |
-| Claude skills | `.claude/skills/*/SKILL.md` |
-| Workflow index | [docs/ai-workflow/README.md](docs/ai-workflow/README.md) |
+| Asset              | Location                                                 |
+| ------------------ | -------------------------------------------------------- |
+| Cursor rules       | `.cursor/rules/*.mdc`                                    |
+| Cursor commands    | `.cursor/commands/*.md`                                  |
+| Cursor skills      | `.cursor/skills/*/SKILL.md`                              |
+| MCP template       | `.cursor/mcp.example.json`                               |
+| Hook policy (docs) | `.cursor/hooks/`                                         |
+| Claude commands    | `.claude/commands/*.md`                                  |
+| Claude skills      | `.claude/skills/*/SKILL.md`                              |
+| Workflow index     | [docs/ai-workflow/README.md](docs/ai-workflow/README.md) |
+
+<!-- BEGIN FRAMEWORK SETUP -->
+
+## Shared agent setup
+
+Project-specific instructions in this file and nested instruction files govern this workspace.
+Reusable skills are authored in `.claude/skills/`; other harness trees are generated.
+Run installed helpers relative to their skill directory; run project checks from this workspace.
+Preserve user edits, credentials, model settings, permissions and unrelated configuration.
+- Build: `pnpm run build`
+- Test: `pnpm run test`
+- Lint: `pnpm run lint`
+
+Installed library: 45 applicable skills. Synchronize explicitly; startup hooks never install updates.
+<!-- END FRAMEWORK SETUP -->
+
+<!-- FRAMEWORK RULE REFERENCES -->
+Read the always-on project rules before working:
+- `.claude/rules/00-project-overview.md`
+- `.claude/rules/10-architecture-boundaries.md`
+- `.claude/rules/20-security-and-secrets.md`
+- `.claude/rules/90-docs-and-change-control.md`
+- `.claude/rules/karpathy-coding.md`
+- `.claude/rules/safety-and-secrets.md`
+- `.claude/rules/sdlc-core.md`
+<!-- END FRAMEWORK RULE REFERENCES -->

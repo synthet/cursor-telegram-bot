@@ -4,14 +4,14 @@ Agent Remote can influence local code execution and receive commands from Telegr
 
 ## Threat model (summary)
 
-| Threat | Mitigation |
-|--------|------------|
-| Stolen Telegram account / chat | Pairing codes, allowlisted chat, rate limits |
-| Network access to bridge | Bind `127.0.0.1`, random per-start bearer token |
-| Malicious MCP tool usage | Tool allowlist, approvals, no raw shell tools |
-| Hook payload injection | Validate JSON; minimal scripts; no eval |
-| Secret leakage via Telegram | Redaction pipeline on logs/diffs/messages |
-| Callback replay | Nonces, expiry, idempotent approval handling |
+| Threat                         | Mitigation                                      |
+| ------------------------------ | ----------------------------------------------- |
+| Stolen Telegram account / chat | Pairing codes, allowlisted chat, rate limits    |
+| Network access to bridge       | Bind `127.0.0.1`, random per-start bearer token |
+| Malicious MCP tool usage       | Tool allowlist, approvals, no raw shell tools   |
+| Hook payload injection         | Validate JSON; minimal scripts; no eval         |
+| Secret leakage via Telegram    | Redaction pipeline on logs/diffs/messages       |
+| Callback replay                | Nonces, expiry, idempotent approval handling    |
 
 ## Secret handling
 
@@ -31,7 +31,7 @@ Required for high-risk actions: shell, installs, git push/reset, deletes, out-of
 
 ## MCP safety
 
-Tools connect only to authenticated local bridge. `remote.request_approval` and `remote.ask_user` block until decision or timeout. No bypass of queue via `remote.loopback_enqueue`.
+Tools connect only to authenticated local bridge. `remote_request_approval` and `remote_ask_user` block until decision or timeout. No bypass of queue via `remote_loopback_enqueue`.
 
 ## Hooks safety
 

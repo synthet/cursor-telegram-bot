@@ -1,5 +1,5 @@
 {
-  "name": "@agent-remote/cursor-extension",
+  "name": "agent-remote-cursor-extension",
   "version": "0.1.0",
   "private": true,
   "displayName": "Agent Remote Control (Cursor)",
@@ -8,10 +8,16 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
-  "extensionDependencies": ["agent-remote.vscode-extension"],
+  "extensionDependencies": [
+    "agent-remote.agent-remote-vscode-extension"
+  ],
   "contributes": {
     "commands": [
       {
@@ -22,7 +28,8 @@
   },
   "scripts": {
     "build": "tsup src/extension.ts --format cjs --platform node --external vscode",
-    "dev": "tsup src/extension.ts --format cjs --platform node --external vscode --watch"
+    "dev": "tsup src/extension.ts --format cjs --platform node --external vscode --watch",
+    "package": "vsce package --no-dependencies --allow-missing-repository --out ../../dist/agent-remote-cursor-extension.vsix"
   },
   "dependencies": {
     "@agent-remote/shared": "workspace:*"

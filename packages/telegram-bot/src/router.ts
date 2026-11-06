@@ -15,14 +15,19 @@ export interface UpdateRouterDeps {
   bridge: BridgeClient;
   isAuthorized: (chatId: number) => boolean;
   getWorkspace: () => { uri: string; name: string };
-  onApprovalNeeded?: (chatId: number, approval: {
-    id: string;
-    nonce: string;
-    summary: string;
-    sessionId: string;
-    risk: string;
-    details: string;
-  }) => Promise<void>;
+  /** Called when an authorized user sends a non-command text message (e.g. answering an ask). */
+  onPlainText?: (chatId: number, text: string) => Promise<void>;
+  onApprovalNeeded?: (
+    chatId: number,
+    approval: {
+      id: string;
+      nonce: string;
+      summary: string;
+      sessionId: string;
+      risk: string;
+      details: string;
+    },
+  ) => Promise<void>;
 }
 
 export class UpdateRouter {
@@ -43,8 +48,18 @@ export class UpdateRouter {
     const text = (message.text as string) ?? "";
     const chatId = chat.id;
 
+    // Reject anything that isn't a private 1:1 chat. Pairing tied a single chat_id, but
+    // this guards against forwarded messages or shared groups from the same user_id.
+    if (chat.type !== "private") return;
+
     const cmd = parseTelegramCommand(text);
-    if (!cmd) return;
+    if (!cmd) {
+      // Non-command text: treat as a free-text reply to a pending ask-user prompt.
+      if (this.deps.isAuthorized(chatId) && text.trim().length > 0 && this.deps.onPlainText) {
+        await this.deps.onPlainText(chatId, text.trim()).catch(() => undefined);
+      }
+      return;
+    }
 
     if (cmd.name === "start" || cmd.name === "help") {
       await this.sendStartOrHelp(chatId, cmd.name);
@@ -107,7 +122,10 @@ export class UpdateRouter {
         await this.handleWorkspace(chatId);
         break;
       case "settings":
-        await this.deps.client.sendMessage(chatId, "Settings: private chat only, single authorized chat.");
+        await this.deps.client.sendMessage(
+          chatId,
+          "Settings: private chat only, single authorized chat.",
+        );
         break;
       default:
         await this.deps.client.sendMessage(chatId, `Unknown command. Use /help`);
@@ -136,7 +154,9 @@ export class UpdateRouter {
     const result = await this.deps.bridge.confirmPairing(code, chatId, chatType);
     await this.deps.client.sendMessage(
       chatId,
-      result.ok ? "Paired successfully. Use /status to verify." : "Invalid or expired pairing code.",
+      result.ok
+        ? "Paired successfully. Use /status to verify."
+        : "Invalid or expired pairing code.",
     );
   }
 
@@ -170,7 +190,8 @@ export class UpdateRouter {
       return;
     }
     const lines = sessions.map(
-      (s) => `${escapeTelegramHtml(s.id)} — ${s.status}${s.title ? ` (${escapeTelegramHtml(s.title)})` : ""}`,
+      (s) =>
+        `${escapeTelegramHtml(s.id)} — ${s.status}${s.title ? ` (${escapeTelegramHtml(s.title)})` : ""}`,
     );
     await this.deps.client.sendMessage(chatId, `<b>Sessions</b>\n${lines.join("\n")}`);
   }
@@ -235,7 +256,10 @@ export class UpdateRouter {
       return;
     }
     await this.deps.bridge.sendMessage(sessionId, message);
-    await this.deps.client.sendMessage(chatId, `Message queued for ${escapeTelegramHtml(sessionId)}`);
+    await this.deps.client.sendMessage(
+      chatId,
+      `Message queued for ${escapeTelegramHtml(sessionId)}`,
+    );
   }
 
   private async handleStop(chatId: number, sessionId?: string): Promise<void> {
@@ -282,7 +306,10 @@ export class UpdateRouter {
       return;
     }
     await this.deps.bridge.decideApproval(approvalId, action);
-    await this.deps.client.sendMessage(chatId, `${action === "approve" ? "Approved" : "Denied"} ${escapeTelegramHtml(approvalId)}`);
+    await this.deps.client.sendMessage(
+      chatId,
+      `${action === "approve" ? "Approved" : "Denied"} ${escapeTelegramHtml(approvalId)}`,
+    );
   }
 
   private async handleMcp(chatId: number): Promise<void> {

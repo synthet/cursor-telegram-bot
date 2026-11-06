@@ -9,11 +9,7 @@ export class AgentAdapterRegistry {
   private active: AgentAdapter | null = null;
 
   async initialize(): Promise<AgentAdapter> {
-    this.adapters = [
-      new CursorCliAgentAdapter(),
-      new SdkAgentAdapter(),
-      new NoopAgentAdapter(),
-    ];
+    this.adapters = [new CursorCliAgentAdapter(), new SdkAgentAdapter(), new NoopAgentAdapter()];
     for (const adapter of this.adapters) {
       if (adapter.id === "noop") continue;
       if (await adapter.isAvailable()) {

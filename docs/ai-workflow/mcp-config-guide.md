@@ -25,10 +25,10 @@
 
 ## Failure modes
 
-| Symptom | Likely cause |
-|---------|----------------|
-| MCP fails to start | `dist/` missing — run `pnpm build` |
-| `remote.status` errors | Bridge not running or wrong URL/token |
+| Symptom                | Likely cause                                |
+| ---------------------- | ------------------------------------------- |
+| MCP fails to start     | `dist/` missing — run `pnpm build`          |
+| `remote_status` errors | Bridge not running or wrong URL/token       |
 | Tools hang on approval | Telegram not paired; check `/status` in bot |
 
 ## References

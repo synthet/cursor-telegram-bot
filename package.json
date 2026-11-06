@@ -2,6 +2,7 @@
   "name": "agent-remote-control",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Cursor + VS Code remote control via Telegram, MCP, and hooks",
   "scripts": {
     "build": "pnpm -r run build",
@@ -10,12 +11,22 @@
     "lint": "eslint packages --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "clean": "pnpm -r exec rimraf dist && rimraf dist",
+    "verify": "pnpm format:check && pnpm lint && pnpm build && pnpm test",
+    "ci": "pnpm install --frozen-lockfile && pnpm verify",
     "dev:bridge": "pnpm --filter @agent-remote/bridge run dev",
-    "clean": "pnpm -r exec rimraf dist"
+    "dev:all": "pnpm -r --parallel run dev",
+    "start:bridge": "node packages/bridge/dist/cli.js",
+    "start:mcp": "node packages/mcp-server/dist/index.js",
+    "package:vscode-extension": "pnpm --filter agent-remote-vscode-extension run build && pnpm --filter agent-remote-vscode-extension run prepackage && pnpm --filter agent-remote-vscode-extension run package",
+    "package:cursor-extension": "pnpm --filter agent-remote-cursor-extension run build && pnpm --filter agent-remote-cursor-extension run package",
+    "package:extensions": "pnpm package:vscode-extension && pnpm package:cursor-extension",
+    "test:extension-bridge": "pnpm --filter @agent-remote/bridge run bundle:extension && node scripts/test-extension-bridge.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/node": "^22.10.2",
+    "@vscode/vsce": "^3.2.1",
     "eslint": "^9.17.0",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",

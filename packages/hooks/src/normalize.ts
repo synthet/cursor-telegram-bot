@@ -11,10 +11,7 @@ const HOOK_NAME_TO_PHASE: Record<string, HookPhase> = {
   "agent-remote-after-tool": "after_tool",
 };
 
-export function normalizeHookPayload(
-  raw: unknown,
-  hookName: string,
-): HookEvent {
+export function normalizeHookPayload(raw: unknown, hookName: string): HookEvent {
   const payload = typeof raw === "object" && raw !== null ? raw : { value: raw };
   const obj = payload as Record<string, unknown>;
   const phase =

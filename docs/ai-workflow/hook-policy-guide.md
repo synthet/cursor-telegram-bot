@@ -2,10 +2,10 @@
 
 ## Two hook locations
 
-| Path | Role |
-|------|------|
-| [.cursor/hooks/](../../.cursor/hooks/) | Policy JSON + **example** payloads for agents/reviewers |
-| [packages/hooks/](../../packages/hooks/) | **Runtime** hook scripts (Node bins → bridge) |
+| Path                                     | Role                                                    |
+| ---------------------------------------- | ------------------------------------------------------- |
+| [.cursor/hooks/](../../.cursor/hooks/)   | Policy JSON + **example** payloads for agents/reviewers |
+| [packages/hooks/](../../packages/hooks/) | **Runtime** hook scripts (Node bins → bridge)           |
 
 Do not confuse Cursor’s user/workspace hooks config (installed by the extension) with this docs folder.
 

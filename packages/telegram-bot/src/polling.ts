@@ -46,8 +46,7 @@ export class TelegramPoller {
           continue;
         }
         if (err instanceof TelegramError && err.statusCode === 429) {
-          const retryAfter =
-            (err as TelegramError & { retryAfter?: number }).retryAfter ?? 5;
+          const retryAfter = (err as TelegramError & { retryAfter?: number }).retryAfter ?? 5;
           await sleep(retryAfter * 1000);
           continue;
         }

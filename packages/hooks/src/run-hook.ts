@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { normalizeHookPayload } from "./normalize.js";
 
 export interface RunHookOptions {
@@ -6,6 +8,7 @@ export interface RunHookOptions {
 }
 
 export async function runHook(options: RunHookOptions): Promise<number> {
+  loadProjectEnv();
   const bridgeUrl = process.env.AGENT_REMOTE_BRIDGE_URL;
   const bridgeToken = process.env.AGENT_REMOTE_BRIDGE_TOKEN;
 
@@ -70,4 +73,36 @@ function readStdin(): Promise<string> {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+/** Load repo `.env` from Cursor workspace root (does not override existing env). */
+function loadProjectEnv(): void {
+  const startDir =
+    process.env.CURSOR_PROJECT_DIR ?? process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
+  let dir = startDir;
+  for (let i = 0; i < 8; i++) {
+    const envPath = resolve(dir, ".env");
+    if (existsSync(envPath)) {
+      for (const rawLine of readFileSync(envPath, "utf8").split(/\r?\n/)) {
+        const line = rawLine.trim();
+        if (!line || line.startsWith("#")) continue;
+        const eq = line.indexOf("=");
+        if (eq <= 0) continue;
+        const key = line.slice(0, eq).trim();
+        if (!key || process.env[key] !== undefined) continue;
+        let value = line.slice(eq + 1).trim();
+        if (
+          (value.startsWith('"') && value.endsWith('"')) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1);
+        }
+        process.env[key] = value;
+      }
+      return;
+    }
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
 }

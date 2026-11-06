@@ -12,7 +12,7 @@
     { "event": "before_shell", "risk": "high", "mode": "block" },
     { "event": "before_shell", "risk": "critical", "mode": "block" },
     { "event": "before_file_edit", "risk": "high", "mode": "approval" },
-    { "event": "before_mcp_tool", "toolPattern": "remote.request_approval", "mode": "observe" },
+    { "event": "before_mcp_tool", "toolPattern": "remote_request_approval", "mode": "observe" },
     { "event": "before_mcp_tool", "risk": "high", "mode": "approval" }
   ],
   "bridgeUnavailable": {

@@ -33,8 +33,7 @@ export class NoopAgentAdapter implements AgentAdapter {
         id: "noop_1",
         timestamp: new Date().toISOString(),
         level: "info",
-        message:
-          "Install Cursor CLI (cursor agent) or configure CURSOR_API_KEY. See docs/setup.md",
+        message: "Install Cursor CLI (cursor agent) or configure CURSOR_API_KEY. See docs/setup.md",
         redacted: false,
       },
     ];

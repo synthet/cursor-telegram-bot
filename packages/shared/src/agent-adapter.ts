@@ -1,10 +1,6 @@
 import type { DiffSummary, LogEvent } from "./schemas/log.js";
 import type { LoopbackEvent } from "./schemas/loopback.js";
-import type {
-  SessionHandle,
-  SessionStatus,
-  StartSessionInput,
-} from "./schemas/session.js";
+import type { SessionHandle, SessionStatus, StartSessionInput } from "./schemas/session.js";
 
 export interface AgentAdapter {
   id: string;

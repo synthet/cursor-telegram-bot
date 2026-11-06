@@ -22,12 +22,12 @@ Each `LoopbackEvent` includes:
 
 ## Examples
 
-| Flow | Path |
-|------|------|
-| `/ask sess_123 hi` | Telegram → bridge → loopback `user_message` → agent adapter |
-| `remote.ask_user` | MCP waiter → Telegram → reply → loopback with `correlationId` |
+| Flow                | Path                                                            |
+| ------------------- | --------------------------------------------------------------- |
+| `/ask sess_123 hi`  | Telegram → bridge → loopback `user_message` → agent adapter     |
+| `remote_ask_user`   | MCP waiter → Telegram → reply → loopback with `correlationId`   |
 | Hook shell approval | hook → approval → Telegram → `approval_decision` → hook unblock |
-| `/stop sess_123` | loopback `cancel` → adapter.stopSession |
+| `/stop sess_123`    | loopback `cancel` → adapter.stopSession                         |
 
 ## Implementation
 

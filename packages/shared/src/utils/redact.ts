@@ -26,9 +26,6 @@ export function redact(text: string): string {
     }
   }
   // .env style lines
-  result = result.replace(
-    /^([A-Z][A-Z0-9_]*)=(.+)$/gm,
-    (_, key: string) => `${key}=[REDACTED]`,
-  );
+  result = result.replace(/^([A-Z][A-Z0-9_]*)=(.+)$/gm, (_, key: string) => `${key}=[REDACTED]`);
   return result;
 }

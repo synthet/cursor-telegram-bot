@@ -49,11 +49,7 @@ export class BridgeClient {
     );
   }
 
-  createSession(input: {
-    prompt: string;
-    workspaceUri: string;
-    workspaceName: string;
-  }) {
+  createSession(input: { prompt: string; workspaceUri: string; workspaceName: string }) {
     return this.request<{ session: { id: string; status: string; adapter: string } }>("/sessions", {
       method: "POST",
       body: JSON.stringify(input),

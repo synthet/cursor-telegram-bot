@@ -14,20 +14,21 @@ pnpm test
 
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| `@agent-remote/shared` | Types, Zod schemas, parsers, utilities |
-| `@agent-remote/bridge` | Local orchestrator service |
-| `@agent-remote/telegram-bot` | Telegram Bot API adapter |
-| `@agent-remote/mcp-server` | MCP server `agent-remote-control` |
-| `@agent-remote/hooks` | Cursor hook scripts |
-| `@agent-remote/vscode-extension` | VS Code extension |
-| `@agent-remote/cursor-extension` | Cursor-specific integration |
+| Package                          | Description                            |
+| -------------------------------- | -------------------------------------- |
+| `@agent-remote/shared`           | Types, Zod schemas, parsers, utilities |
+| `@agent-remote/bridge`           | Local orchestrator service             |
+| `@agent-remote/telegram-bot`     | Telegram Bot API adapter               |
+| `@agent-remote/mcp-server`       | MCP server `agent-remote-control`      |
+| `@agent-remote/hooks`            | Cursor hook scripts                    |
+| `@agent-remote/vscode-extension` | VS Code extension                      |
+| `@agent-remote/cursor-extension` | Cursor-specific integration            |
 
 ## Documentation
 
 - [Setup](docs/setup.md)
 - [Architecture](docs/architecture.md)
+- [Integration tooling research](docs/research/integration-tooling-research.md)
 - [Security](docs/security.md)
 - [AI workflow (agents)](docs/ai-workflow/README.md)
 - [AGENTS.md](AGENTS.md)

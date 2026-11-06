@@ -46,9 +46,7 @@ export class AgentRemoteTreeProvider implements vscode.TreeDataProvider<vscode.T
         ),
       );
     } catch {
-      items.push(
-        new vscode.TreeItem("Bridge not running", vscode.TreeItemCollapsibleState.None),
-      );
+      items.push(new vscode.TreeItem("Bridge not running", vscode.TreeItemCollapsibleState.None));
     }
     return items;
   }
